@@ -7,9 +7,9 @@
   let _queueId = 0;
   let _tickNum = 0;
   let _external = 1;
-  
+
   const _IF = {
-    state: 1,
+    state: 0,
     handler: () => {},
     args: [],
     delay: 0,

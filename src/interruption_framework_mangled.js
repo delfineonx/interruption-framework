@@ -8,7 +8,7 @@
   N=0,
   E=1,
   F={
-    state:1,
+    state:0,
     handler:()=>{},
     args:[],
     delay:0,
