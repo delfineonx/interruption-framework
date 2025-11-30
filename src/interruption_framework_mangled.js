@@ -20,6 +20,7 @@
       if(F.state&E){
         I[++D]=[F.handler,F.args,F.delay+N-1,F.limit]
       }
+      F.state=0;
       E=1;
       return"InternalError"
     }

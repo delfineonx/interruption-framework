@@ -22,6 +22,7 @@
       if (_IF.state & _external) {
           _interrupted[++_queueId] = [_IF.handler, _IF.args, _IF.delay + _tickNum - 1, _IF.limit];
       }
+      _IF.state = 0;
       _external = 1;
       return "InternalError";
     },
