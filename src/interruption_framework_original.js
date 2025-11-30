@@ -23,7 +23,7 @@
           _interrupted[++_queueId] = [_IF.handler, _IF.args, _IF.delay + _tickNum - 1, _IF.limit];
       }
       _external = 1;
-      return "Interruption Framework";
+      return "InternalError";
     },
   });
 

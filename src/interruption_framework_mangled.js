@@ -21,7 +21,7 @@
         I[++D]=[F.handler,F.args,F.delay+N-1,F.limit]
       }
       E=1;
-      return"Interruption Framework"
+      return"InternalError"
     }
   });
   let tick=()=>{
