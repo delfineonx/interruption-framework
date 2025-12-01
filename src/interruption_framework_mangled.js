@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 
 {
-  let F={
+  let _IF={
     state:0,
     handler:()=>{},
     args:[],
@@ -13,20 +13,26 @@
   },
   I={},
   D=0,
+  S=0,
   E=1,
   N=0;
   Object.defineProperty(globalThis.InternalError.prototype,"name",{
     configurable:!0,
     get:()=>{
-      if(F.state&E){
-        I[++D]=[F.handler,F.args,F.delay+N-1,F.limit]
+      if(_IF.state&E){
+        I[++D]=[_IF.handler,_IF.args,_IF.delay+N-1,_IF.limit];
+        S++
       }
       E=1;
-      F.state=0;
+      _IF.state=0;
       return"InternalError"
     }
   });
-  F.tick=()=>{
+  _IF.tick=()=>{
+    if(!S){
+      N++;
+      return
+    }
     for(let d in I){
       let c=I[d];
       if(c[2]<N){
@@ -35,14 +41,15 @@
           c[3]--;
           c[0](...c[1])
         }
-        delete I[d]
+        delete I[d];
+        S--;
+        E=1
       }
     }
-    E=1;
     N++
   };
-  Object.seal(F);
-  globalThis.IF=F;
+  Object.seal(_IF);
+  globalThis.IF=_IF;
   void 0
 }
 

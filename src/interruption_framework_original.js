@@ -15,6 +15,7 @@
 
   const _interrupted = {};
   let _queueId = 0;
+  let _queueSize = 0;
   let _external = 1;
   let _tickNum = 0;
 
@@ -23,6 +24,7 @@
     get: () => {
       if (_IF.state & _external) {
           _interrupted[++_queueId] = [_IF.handler, _IF.args, _IF.delay + _tickNum - 1, _IF.limit];
+          _queueSize++;
       }
       _external = 1;
       _IF.state = 0;
@@ -31,6 +33,11 @@
   });
 
   _IF.tick = () => {
+    if (!_queueSize) {
+      _tickNum++;
+      return;
+    }
+
     for (const id in _interrupted) {
       const cache = _interrupted[id];
       if (cache[2] < _tickNum) {
@@ -40,9 +47,10 @@
           cache[0](...cache[1]);
         }
         delete _interrupted[id];
+        _queueSize--;
+        _external = 1;
       }
     }
-    _external = 1;
     _tickNum++;
   };
 
@@ -50,50 +58,5 @@
   globalThis.IF = _IF;
 
   void 0;
-}
-
-// ---------- EXAMPLE ----------
-
-// world code
-{
-  tick = () => {
-    IF.tick();
-  };
-
-  innerTest = function handler() {
-    const _IF = globalThis.IF;
-    _IF.state = 1;
-    _IF.handler = handler;
-    _IF.args = [];
-    _IF.delay = 0;
-    _IF.limit = 2;
-
-    // function body
-    // while (true) {}
-
-    _IF.state = 0;
-  };
-
-  outerTest = () => {
-    // function body
-    // while (true) {}
-  }
-}
-
-// inside code block
-{
-  innerTest();
-}
-
-// inside code block
-{
-  const _IF = globalThis.IF;
-  _IF.state = 1;
-  _IF.handler = outerTest;
-  _IF.args = [];
-  _IF.delay = 0;
-  _IF.limit = 2;
-  outerTest();
-  _IF.state = 0;
 }
 
