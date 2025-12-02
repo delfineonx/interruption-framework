@@ -11,6 +11,7 @@
     limit:2,
     phase:1,
     resetPhase:1,
+    wasInterrupted:!1,
     tick:null
   },
   I={},
@@ -32,6 +33,7 @@
       }else{
         C[0]=_IF.phase;
         _IF.phase=1;
+        _IF.wasInterrupted=!1;
         X=1
       }
       _IF.state=0;
@@ -52,6 +54,7 @@
           X=0;
           c[4]--;
           _IF.phase=c[0];
+          _IF.wasInterrupted=!0;
           c[1](...c[2])
         }
         delete I[D++];
@@ -63,6 +66,7 @@
     }
     _IF.state=0;
     _IF.phase=1;
+    _IF.wasInterrupted=!1;
     X=1;
     N++
   };

@@ -14,6 +14,10 @@
     _IF.delay = 0;
     _IF.limit = 2;
 
+    if (!_IF.wasInterrupted) {
+      console.log("before first interruption");
+    }
+
     if (_IF.phase === 1) {
 
       // main logic
@@ -47,6 +51,10 @@
 
   outerTest = (arg3, arg4) => {
     const _IF = globalThis.IF;
+
+    if (!_IF.wasInterrupted) {
+      console.log("before first interruption");
+    }
 
     if (_IF.phase === 1) {
 

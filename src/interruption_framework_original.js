@@ -9,9 +9,10 @@
     args: [],
     delay: 0,
     limit: 2,
-    phase: 1,
 
+    phase: 1,
     resetPhase: 1,
+    wasInterrupted: false,
 
     tick: null,
   };
@@ -36,6 +37,7 @@
       } else {
         _cache[0] = _IF.phase;
         _IF.phase = 1;
+        _IF.wasInterrupted = false;
         _external = 1;
       }
       _IF.state = 0;
@@ -58,6 +60,7 @@
           _external = 0;
           cache[4]--;
           _IF.phase = cache[0];
+          _IF.wasInterrupted = true;
           cache[1](...cache[2]);
         }
         delete _interrupted[_dequeueId++];
@@ -69,6 +72,7 @@
     }
     _IF.state = 0;
     _IF.phase = 1;
+    _IF.wasInterrupted = false;
     _external = 1;
     _tickNum++;
   };
