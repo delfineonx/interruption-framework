@@ -42,10 +42,10 @@
           c[0](...c[1])
         }
         delete I[d];
-        S--;
-        E=1
+        S--
       }
     }
+    E=1;
     N++
   };
   Object.seal(_IF);
