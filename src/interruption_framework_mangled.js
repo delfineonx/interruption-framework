@@ -10,7 +10,7 @@
     delay:0,
     limit:2,
     phase:1,
-    defaultPhase:1,
+    defaultPhase:((1<<31)-1)|0,
     wasInterrupted:!1,
     tick:null
   },

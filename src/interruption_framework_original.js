@@ -11,7 +11,7 @@
     limit: 2,
 
     phase: 1,
-    defaultPhase: 1,
+    defaultPhase: ((1 << 31) - 1) | 0, // 2147483647
     wasInterrupted: false,
 
     tick: null,
