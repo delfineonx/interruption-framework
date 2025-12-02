@@ -15,12 +15,20 @@
     _IF.limit = 2;
 
     if (!_IF.wasInterrupted) {
+      _IF.phase = _IF.defaultPhase;
+    };
+
+    /*
+    // test code
+    if (!_IF.wasInterrupted) {
       console.log("before first interruption");
     }
+    */
 
     if (_IF.phase === _IF.defaultPhase) {
 
       // main logic
+
       // console.log(_IF.phase); // test code
 
       _IF.phase = 2;
@@ -30,6 +38,7 @@
     if (_IF.phase === 2) {
 
       // main logic
+
       // console.log(_IF.phase); // test code
 
       _IF.phase = 3;
@@ -39,10 +48,10 @@
     if (_IF.phase === 3) {
 
       // main logic
+
       // console.log(_IF.phase); // test code
       // console.log(arg1, arg2); // test code
 
-      _IF.phase = _IF.defaultPhase;
       _IF.state = 0;
       return;
     }
@@ -52,12 +61,20 @@
     const _IF = globalThis.IF;
 
     if (!_IF.wasInterrupted) {
+      _IF.phase = _IF.defaultPhase;
+    };
+
+    /*
+    // test code
+    if (!_IF.wasInterrupted) {
       console.log("before first interruption");
     }
+    */
 
     if (_IF.phase === _IF.defaultPhase) {
 
       // main logic
+
       // console.log(_IF.phase); // test code
 
       _IF.phase = 2;
@@ -67,6 +84,7 @@
     if (_IF.phase === 2) {
 
       // main logic
+
       // console.log(_IF.phase); // test code
 
       _IF.phase = 3;
@@ -76,11 +94,10 @@
     if (_IF.phase === 3) {
 
       // main logic
+
       // console.log(_IF.phase); // test code
       // console.log(arg3, arg4); // test code
 
-      _IF.phase = _IF.defaultPhase;
-      _IF.state = 0;
       return;
     }
   };
@@ -105,5 +122,6 @@
   _IF.delay = 0;
   _IF.limit = 2;
   outerTest(var3, var4);
+  _IF.state = 0;
 }
 
