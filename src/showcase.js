@@ -16,7 +16,8 @@
 
     if (!_IF.wasInterrupted) {
       _IF.phase = _IF.defaultPhase;
-    };
+      // and cached arguments
+    }
 
     /*
     // test code
@@ -62,8 +63,8 @@
     _IF.args = [arg3, arg4];
 
     if (!_IF.wasInterrupted) {
-      _IF.phase = _IF.defaultPhase;
-    };
+      // and cached arguments
+    }
 
     /*
     // test code
@@ -122,6 +123,7 @@
   _IF.args = [var3, var4];
   _IF.delay = 0;
   _IF.limit = 2;
+  _IF.phase = _IF.defaultPhase;
   outerTest(var3, var4);
   _IF.state = 0;
 }
