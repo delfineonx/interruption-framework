@@ -9,24 +9,35 @@
     args: [],
     delay: 0,
     limit: 2,
+    phase: 1,
+
+    resetPhase: 1,
 
     tick: null,
   };
 
   const _interrupted = {};
-  let _queueId = 0;
+  let _enqueueId = 0;
+  let _dequeueId = 1;
   let _queueSize = 0;
+  let _cache = [1];
   let _external = 1;
   let _tickNum = 0;
 
   Object.defineProperty(globalThis.InternalError.prototype, "name", {
     configurable: true,
     get: () => {
-      if (_IF.state & _external) {
-          _interrupted[++_queueId] = [_IF.handler, _IF.args, _IF.delay + _tickNum - 1, _IF.limit];
+      if (_external) {
+        if (_IF.state) {
+          _interrupted[++_enqueueId] = [_IF.phase, _IF.handler, _IF.args, _IF.delay + _tickNum, _IF.limit];
           _queueSize++;
+          _IF.phase = 1;
+        }
+      } else {
+        _cache[0] = _IF.phase;
+        _IF.phase = 1;
+        _external = 1;
       }
-      _external = 1;
       _IF.state = 0;
       return "InternalError";
     },
@@ -38,18 +49,26 @@
       return;
     }
 
-    for (const id in _interrupted) {
-      const cache = _interrupted[id];
-      if (cache[2] < _tickNum) {
-        if (cache[3] > 0) {
+    let cache;
+    const maxDequeueId = _enqueueId;
+    while (_dequeueId <= maxDequeueId) {
+      cache = _cache = _interrupted[_dequeueId];
+      if (cache[3] <= _tickNum) {
+        if (cache[4] > 0) {
           _external = 0;
-          cache[3]--;
-          cache[0](...cache[1]);
+          cache[4]--;
+          _IF.phase = cache[0];
+          cache[1](...cache[2]);
         }
-        delete _interrupted[id];
+        delete _interrupted[_dequeueId++];
         _queueSize--;
+      } else {
+        delete _interrupted[_dequeueId++];
+        _interrupted[++_enqueueId] = cache;
       }
     }
+    _IF.state = 0;
+    _IF.phase = 1;
     _external = 1;
     _tickNum++;
   };

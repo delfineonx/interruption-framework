@@ -14,20 +14,68 @@
     _IF.delay = 0;
     _IF.limit = 2;
 
-    // function body
+    if (_IF.phase === 1) {
 
-    // console.log(arg1, arg2);
-    // while (true) { }
+      // main logic
+      // console.log(_IF.phase); // test code
+
+      _IF.phase = 2;
+      // while (true) { } // test code
+    }
+
+    if (_IF.phase === 2) {
+
+      // main logic
+      // console.log(_IF.phase); // test code
+
+      _IF.phase = 3;
+      // while (true) { } // test code
+    }
+
+    if (_IF.phase === 3) {
+
+      // main logic
+      // console.log(_IF.phase); // test code
+      // console.log(arg1, arg2); // test code
+
+      _IF.phase = _IF.resetPhase;
+      // while (true) { } // test code
+    }
 
     _IF.state = 0;
   };
 
   outerTest = (arg3, arg4) => {
-    // function body
+    const _IF = globalThis.IF;
 
-    // console.log(arg3, arg4);
-    // while (true) { }
-  }
+    if (_IF.phase === 1) {
+
+      // main logic
+      // console.log(_IF.phase); // test code
+
+      _IF.phase = 2;
+      // while (true) { } // test code
+    }
+
+    if (_IF.phase === 2) {
+
+      // main logic
+      // console.log(_IF.phase); // test code
+
+      _IF.phase = 3;
+      // while (true) { } // test code
+    }
+
+    if (_IF.phase === 3) {
+
+      // main logic
+      // console.log(_IF.phase); // test code
+      // console.log(arg3, arg4); // test code
+
+      _IF.phase = _IF.resetPhase;
+      // while (true) { } // test code
+    }
+  };
 }
 
 // inside code block
