@@ -11,7 +11,7 @@
     limit: 2,
 
     phase: 1,
-    resetPhase: 1,
+    defaultPhase: 1,
     wasInterrupted: false,
 
     tick: null,

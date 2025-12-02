@@ -18,7 +18,7 @@
       console.log("before first interruption");
     }
 
-    if (_IF.phase === 1) {
+    if (_IF.phase === _IF.defaultPhase) {
 
       // main logic
       // console.log(_IF.phase); // test code
@@ -42,11 +42,10 @@
       // console.log(_IF.phase); // test code
       // console.log(arg1, arg2); // test code
 
-      _IF.phase = _IF.resetPhase;
-      // while (true) { } // test code
+      _IF.phase = _IF.defaultPhase;
+      _IF.state = 0;
+      return;
     }
-
-    _IF.state = 0;
   };
 
   outerTest = (arg3, arg4) => {
@@ -56,7 +55,7 @@
       console.log("before first interruption");
     }
 
-    if (_IF.phase === 1) {
+    if (_IF.phase === _IF.defaultPhase) {
 
       // main logic
       // console.log(_IF.phase); // test code
@@ -80,8 +79,9 @@
       // console.log(_IF.phase); // test code
       // console.log(arg3, arg4); // test code
 
-      _IF.phase = _IF.resetPhase;
-      // while (true) { } // test code
+      _IF.phase = _IF.defaultPhase;
+      _IF.state = 0;
+      return;
     }
   };
 }
@@ -105,6 +105,5 @@
   _IF.delay = 0;
   _IF.limit = 2;
   outerTest(var3, var4);
-  _IF.state = 0;
 }
 
