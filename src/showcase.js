@@ -59,6 +59,7 @@
 
   outerTest = (arg3, arg4) => {
     const _IF = globalThis.IF;
+    _IF.args = [arg3, arg4];
 
     if (!_IF.wasInterrupted) {
       _IF.phase = _IF.defaultPhase;
