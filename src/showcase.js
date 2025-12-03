@@ -14,94 +14,75 @@
     _IF.delay = 0;
     _IF.limit = 2;
 
-    if (!_IF.wasInterrupted) {
-      _IF.phase = _IF.defaultPhase;
-      // and cached arguments
-    }
+    const wasInterrupted = _IF.wasInterrupted;
+    _IF.phase = _IF.phase * wasInterrupted + _IF.defaultPhase * !wasInterrupted; // uninterruptible
 
-    /*
-    // test code
-    if (!_IF.wasInterrupted) {
-      console.log("before first interruption");
-    }
-    */
-
+    let cache = _IF.cache;
     if (_IF.phase === _IF.defaultPhase) {
+      _IF.cache = cache = {};
+      _IF.phase = 1;
+    }
 
-      // main logic
-
-      // console.log(_IF.phase); // test code
+    if (_IF.phase === 1) {
+      cache.value = 6;
+      console.log(_IF.phase, cache.value);
 
       _IF.phase = 2;
-      // while (true) { } // test code
+      // while (true) { }
     }
 
     if (_IF.phase === 2) {
-
-      // main logic
-
-      // console.log(_IF.phase); // test code
+      cache.value *= 10;
+      console.log(_IF.phase, cache.value);
 
       _IF.phase = 3;
-      // while (true) { } // test code
+      // while (true) { }
     }
 
     if (_IF.phase === 3) {
+      cache.value += 7;
+      console.log(arg1, arg2, _IF.phase, cache.value);
 
-      // main logic
-
-      // console.log(_IF.phase); // test code
-      // console.log(arg1, arg2); // test code
-
-      _IF.state = 0;
-      return;
+      _IF.phase === 4;
     }
+
+    _IF.state = 0;
+    return;
   };
 
   outerTest = (arg3, arg4) => {
     const _IF = globalThis.IF;
-    _IF.args = [arg3, arg4];
 
-    if (!_IF.wasInterrupted) {
-      // and cached arguments
-    }
-
-    /*
-    // test code
-    if (!_IF.wasInterrupted) {
-      console.log("before first interruption");
-    }
-    */
+    let cache = _IF.cache;
 
     if (_IF.phase === _IF.defaultPhase) {
+      cache.value = 7;
+      console.log(_IF.phase, cache.value);
 
-      // main logic
+      _IF.phase = 1;
+      // while (true) { }
+    }
 
-      // console.log(_IF.phase); // test code
+    if (_IF.phase === 1) {
+      cache.value *= 10;
+      console.log(_IF.phase, cache.value);
 
       _IF.phase = 2;
-      // while (true) { } // test code
+      // while (true) { }
     }
 
     if (_IF.phase === 2) {
-
-      // main logic
-
-      // console.log(_IF.phase); // test code
+      cache.value += 6;
+      console.log(arg3, arg4, _IF.phase, cache.value);
 
       _IF.phase = 3;
-      // while (true) { } // test code
     }
 
-    if (_IF.phase === 3) {
-
-      // main logic
-
-      // console.log(_IF.phase); // test code
-      // console.log(arg3, arg4); // test code
-
-      return;
+    if (!_IF.wasInterrupted) {
+      console.log("Finished without interruption!");
     }
+
+    return;
   };
 }
 
@@ -124,6 +105,8 @@
   _IF.delay = 0;
   _IF.limit = 2;
   _IF.phase = _IF.defaultPhase;
+  _IF.cache = {};
+  // while (true) { }
   outerTest(var3, var4);
   _IF.state = 0;
 }

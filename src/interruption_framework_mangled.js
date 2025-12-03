@@ -10,7 +10,8 @@
     delay:0,
     limit:2,
     phase:1,
-    defaultPhase:((1<<31)-1)|0,
+    cache:null,
+    defaultPhase:400000,
     wasInterrupted:!1,
     tick:null
   },
@@ -18,7 +19,7 @@
   E=0,
   D=1,
   S=0,
-  C=[1],
+  L=[400000],
   X=1,
   N=0;
   Object.defineProperty(globalThis.InternalError.prototype,"name",{
@@ -26,13 +27,15 @@
     get:()=>{
       if(X){
         if(_IF.state){
-          I[++E]=[_IF.phase,_IF.handler,_IF.args,_IF.delay+N,_IF.limit];
+          I[++E]=[_IF.phase,_IF.cache,_IF.handler,_IF.args,_IF.delay+N,_IF.limit];
           S++;
-          _IF.phase=1
+          _IF.phase=400000;
+          _IF.cache=null
         }
       }else{
-        C[0]=_IF.phase;
-        _IF.phase=1;
+        L[0]=_IF.phase;
+        _IF.phase=400000;
+        _IF.cache=null;
         _IF.wasInterrupted=!1;
         X=1
       }
@@ -45,27 +48,29 @@
       N++;
       return
     }
-    let c;
-    const m=E;
+    let l,
+    m=E;
     while(D<=m){
-      c=C=I[D];
-      if(c[3]<=N){
-        if(c[4]>0){
+      l=L=I[D];
+      if(l[4]<=N){
+        if(l[5]>0){
           X=0;
-          c[4]--;
-          _IF.phase=c[0];
+          l[5]--;
+          _IF.phase=l[0];
+          _IF.cache=l[1];
           _IF.wasInterrupted=!0;
-          c[1](...c[2])
+          l[2](...l[3])
         }
         delete I[D++];
         S--
       }else{
         delete I[D++];
-        I[++E]=c
+        I[++E]=l
       }
     }
     _IF.state=0;
-    _IF.phase=1;
+    _IF.phase=400000;
+    _IF.cache=null;
     _IF.wasInterrupted=!1;
     X=1;
     N++
