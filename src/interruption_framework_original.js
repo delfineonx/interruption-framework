@@ -8,7 +8,7 @@
     handler: () => {},
     args: [],
     delay: 0,
-    limit: 1,
+    limit: 2,
 
     phase: 400000,
     cache: null,
@@ -34,6 +34,8 @@
         if (_IF.state) {
           _interrupted[++_enqueueId] = [_IF.phase, _IF.cache, _IF.handler, _IF.args, _IF.delay + _tickNum, _IF.limit];
           _queueSize++;
+          _IF.delay = 0;
+          _IF.limit = 2;
         }
       } else {
         _element[0] = _IF.phase;

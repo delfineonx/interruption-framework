@@ -8,7 +8,7 @@
     handler:()=>{},
     args:[],
     delay:0,
-    limit:1,
+    limit:2,
     phase:400000,
     cache:null,
     defaultPhase:400000,
@@ -28,7 +28,9 @@
       if(X){
         if(_IF.state){
           I[++E]=[_IF.phase,_IF.cache,_IF.handler,_IF.args,_IF.delay+N,_IF.limit];
-          S++
+          S++;
+          _IF.delay=0;
+          _IF.limit=2
         }
       }else{
         L[0]=_IF.phase;
