@@ -12,7 +12,7 @@
     _IF.handler = handler;
     _IF.args = [arg1, arg2];
     _IF.delay = 0;
-    _IF.limit = 2;
+    _IF.limit = 10;
 
     const wasInterrupted = _IF.wasInterrupted;
     _IF.phase = _IF.phase * wasInterrupted + _IF.defaultPhase * !wasInterrupted; // uninterruptible
@@ -20,30 +20,43 @@
     let cache = _IF.cache;
     if (_IF.phase === _IF.defaultPhase) {
       _IF.cache = cache = {};
+      api.log(api.now());
+
       _IF.phase = 1;
+      while (true) { } // simulate interruption
     }
 
     if (_IF.phase === 1) {
       cache.value = 6;
       console.log(_IF.phase, cache.value);
+      api.log(api.now());
 
       _IF.phase = 2;
-      // while (true) { }
+      while (true) { } // simulate interruption
     }
 
     if (_IF.phase === 2) {
       cache.value *= 10;
       console.log(_IF.phase, cache.value);
+      api.log(api.now());
 
       _IF.phase = 3;
-      // while (true) { }
+      while (true) { } // simulate interruption
     }
 
     if (_IF.phase === 3) {
       cache.value += 7;
       console.log(arg1, arg2, _IF.phase, cache.value);
+      api.log(api.now());
 
-      _IF.phase === 4;
+      _IF.phase = 4;
+      while (true) { } // simulate interruption
+    }
+
+    api.log(api.now());
+
+    if (!_IF.wasInterrupted) {
+      console.log("Finished without interruption!");
     }
 
     _IF.state = 0;
@@ -58,25 +71,31 @@
     if (_IF.phase === _IF.defaultPhase) {
       cache.value = 7;
       console.log(_IF.phase, cache.value);
+      api.log(api.now());
 
       _IF.phase = 1;
-      // while (true) { }
+      while (true) { } // simulate interruption
     }
 
     if (_IF.phase === 1) {
       cache.value *= 10;
       console.log(_IF.phase, cache.value);
+      api.log(api.now());
 
       _IF.phase = 2;
-      // while (true) { }
+      while (true) { } // simulate interruption
     }
 
     if (_IF.phase === 2) {
       cache.value += 6;
       console.log(arg3, arg4, _IF.phase, cache.value);
+      api.log(api.now());
 
       _IF.phase = 3;
+      while (true) { } // simulate interruption
     }
+
+    api.log(api.now());
 
     if (!_IF.wasInterrupted) {
       console.log("Finished without interruption!");
@@ -103,10 +122,11 @@
   _IF.handler = outerTest;
   _IF.args = [var3, var4];
   _IF.delay = 0;
-  _IF.limit = 2;
+  _IF.limit = 10;
   _IF.phase = _IF.defaultPhase;
   _IF.cache = {};
-  // while (true) { }
+  api.log(api.now());
+  while (true) { } // simulate interruption
   outerTest(var3, var4);
   _IF.state = 0;
 }
