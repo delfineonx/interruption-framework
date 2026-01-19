@@ -7,97 +7,92 @@
   };
 
   innerTest = function handler(arg1, arg2) {
-    const _IF = globalThis.IF;
-    _IF.state = 1;
-    _IF.handler = handler;
-    _IF.args = [arg1, arg2];
-    _IF.delay = 0;
-    _IF.limit = 10;
+    IF.state = 1;
+    IF.fn = handler;
+    IF.args = [arg1, arg2];
+    IF.limit = 5;
 
-    const wasInterrupted = _IF.wasInterrupted;
-    _IF.phase = _IF.phase * wasInterrupted + _IF.defaultPhase * !wasInterrupted; // uninterruptible
+    const wasInterrupted = IF.wasInterrupted;
+    IF.phase = IF.phase * wasInterrupted + IF.default * !wasInterrupted; // uninterruptible
 
-    let cache = _IF.cache;
-    if (_IF.phase === _IF.defaultPhase) {
-      _IF.cache = cache = {};
+    let cache = IF.cache;
+    if (IF.phase === IF.default) {
+      IF.cache = cache = {};
       api.log(api.now());
 
-      _IF.phase = 1;
+      IF.phase = 1;
       while (true) { } // simulate interruption
     }
 
-    if (_IF.phase === 1) {
+    if (IF.phase === 1) {
       cache.value = 6;
-      console.log(_IF.phase, cache.value);
+      console.log(IF.phase, cache.value);
       api.log(api.now());
 
-      _IF.phase = 2;
+      IF.phase = 2;
       while (true) { } // simulate interruption
     }
 
-    if (_IF.phase === 2) {
+    if (IF.phase === 2) {
       cache.value *= 10;
-      console.log(_IF.phase, cache.value);
+      console.log(IF.phase, cache.value);
       api.log(api.now());
 
-      _IF.phase = 3;
+      IF.phase = 3;
       while (true) { } // simulate interruption
     }
 
-    if (_IF.phase === 3) {
+    if (IF.phase === 3) {
       cache.value += 7;
-      console.log(arg1, arg2, _IF.phase, cache.value);
+      console.log(arg1, arg2, IF.phase, cache.value);
       api.log(api.now());
 
-      _IF.phase = 4;
+      IF.phase = 4;
       while (true) { } // simulate interruption
     }
 
     api.log(api.now());
 
-    if (!_IF.wasInterrupted) {
+    if (!IF.wasInterrupted) {
       console.log("Finished without interruption!");
     }
 
-    _IF.state = 0;
+    IF.state = 0;
     return;
   };
 
   outerTest = (arg3, arg4) => {
-    const _IF = globalThis.IF;
+    let cache = IF.cache;
 
-    let cache = _IF.cache;
-
-    if (_IF.phase === _IF.defaultPhase) {
+    if (IF.phase === IF.default) {
       cache.value = 7;
-      console.log(_IF.phase, cache.value);
+      console.log(IF.phase, cache.value);
       api.log(api.now());
 
-      _IF.phase = 1;
+      IF.phase = 1;
       while (true) { } // simulate interruption
     }
 
-    if (_IF.phase === 1) {
+    if (IF.phase === 1) {
       cache.value *= 10;
-      console.log(_IF.phase, cache.value);
+      console.log(IF.phase, cache.value);
       api.log(api.now());
 
-      _IF.phase = 2;
+      IF.phase = 2;
       while (true) { } // simulate interruption
     }
 
-    if (_IF.phase === 2) {
+    if (IF.phase === 2) {
       cache.value += 6;
-      console.log(arg3, arg4, _IF.phase, cache.value);
+      console.log(arg3, arg4, IF.phase, cache.value);
       api.log(api.now());
 
-      _IF.phase = 3;
+      IF.phase = 3;
       while (true) { } // simulate interruption
     }
 
     api.log(api.now());
-
-    if (!_IF.wasInterrupted) {
+    if (!IF.wasInterrupted) {
       console.log("Finished without interruption!");
     }
 
@@ -117,14 +112,13 @@
   const var3 = "value3";
   const var4 = "value4";
 
-  const _IF = globalThis.IF;
-  _IF.state = 1;
-  _IF.handler = outerTest;
-  _IF.args = [var3, var4];
-  _IF.delay = 0;
-  _IF.limit = 10;
-  _IF.phase = _IF.defaultPhase;
-  _IF.cache = {};
+  IF.state = 1;
+  IF.fn = outerTest;
+  IF.args = [var3, var4];
+  IF.limit = 5;
+  IF.phase = IF.default;
+  IF.cache = {};
+
   api.log(api.now());
   while (true) { } // simulate interruption
   outerTest(var3, var4);
