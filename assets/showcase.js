@@ -6,122 +6,155 @@
     IF.tick();
   };
 
-  innerTest = function handler(arg1, arg2) {
-    IF.state = 1;
+  interrupt = (condition) => {
+    if (condition) {
+      while (true) {}
+    }
+  };
+
+  inner_test = function handler(arg1, arg2, cache) {
+    IF.en = 1;
     IF.fn = handler;
-    IF.args = [arg1, arg2];
-    IF.limit = 5;
+    IF.args = [arg1, arg2, cache];
 
-    const wasInterrupted = IF.wasInterrupted;
-    IF.phase = IF.phase * wasInterrupted + IF.default * !wasInterrupted; // uninterruptible
+    const wasInterrupted = !!IF.rcnt;
+    IF.sid *= +wasInterrupted; // uninterruptible
 
-    let cache = IF.cache;
-    if (IF.phase === IF.default) {
-      IF.cache = cache = {};
-      api.log(api.now());
+    if (IF.sid === 0) {
+      if (cache == null) {
+        IF.args[2] = cache = {};
+      }
+      // ... other logic
 
-      IF.phase = 1;
-      while (true) { } // simulate interruption
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
+
+      IF.sid = 1;
+      interrupt(true); // simulate
     }
 
-    if (IF.phase === 1) {
-      cache.value = 6;
-      console.log(IF.phase, cache.value);
-      api.log(api.now());
+    if (IF.sid === 1) {
+      cache.value = arg1;
+      // ... other logic
 
-      IF.phase = 2;
-      while (true) { } // simulate interruption
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
+
+      IF.sid = 2;
+      interrupt(true); // simulate
     }
 
-    if (IF.phase === 2) {
+    if (IF.sid === 2) {
       cache.value *= 10;
-      console.log(IF.phase, cache.value);
-      api.log(api.now());
+      // ... other logic
 
-      IF.phase = 3;
-      while (true) { } // simulate interruption
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
+
+      IF.sid = 3;
+      interrupt(true); // simulate
     }
 
-    if (IF.phase === 3) {
-      cache.value += 7;
-      console.log(arg1, arg2, IF.phase, cache.value);
-      api.log(api.now());
+    if (IF.sid === 3) {
+      cache.value += arg2;
+      // ... other logic
+      
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
 
-      IF.phase = 4;
-      while (true) { } // simulate interruption
+      IF.sid = 4;
+      interrupt(true); // simulate
     }
 
-    api.log(api.now());
+    api.broadcastMessage(
+      "| rcnt: " + IF.rcnt + " | calc: (" + arg1 + " * 10 + " + arg2 + ")" +
+      "\n" +
+      "| cache: " + cache.value + " | time: " + Date.now() +
+      "\n" +
+      "| interrupted: " + wasInterrupted
+    );
 
-    if (!IF.wasInterrupted) {
-      console.log("Finished without interruption!");
-    }
-
-    IF.state = 0;
+    IF.en = 0;
     return;
   };
 
-  outerTest = (arg3, arg4) => {
-    let cache = IF.cache;
+  outer_test = (arg1, arg2, cache) => {
+    if (IF.sid === 0) {
+      if (cache == null) {
+        IF.args[2] = cache = {};
+      }
+      // ... other logic
 
-    if (IF.phase === IF.default) {
-      cache.value = 7;
-      console.log(IF.phase, cache.value);
-      api.log(api.now());
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
 
-      IF.phase = 1;
-      while (true) { } // simulate interruption
+      IF.sid = 1;
+      interrupt(true); // simulate
     }
 
-    if (IF.phase === 1) {
+    if (IF.sid === 1) {
+      cache.value = arg1;
+      // ... other logic
+
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
+
+      IF.sid = 2;
+      interrupt(true); // simulate
+    }
+
+    if (IF.sid === 2) {
       cache.value *= 10;
-      console.log(IF.phase, cache.value);
-      api.log(api.now());
+      // ... other logic
 
-      IF.phase = 2;
-      while (true) { } // simulate interruption
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
+
+      IF.sid = 3;
+      interrupt(true); // simulate
     }
 
-    if (IF.phase === 2) {
-      cache.value += 6;
-      console.log(arg3, arg4, IF.phase, cache.value);
-      api.log(api.now());
+    if (IF.sid === 3) {
+      cache.value += arg2;
+      // ... other logic
+      
+      api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " with cache value: " + cache.value);
 
-      IF.phase = 3;
-      while (true) { } // simulate interruption
+      IF.sid = 4;
+      interrupt(true); // simulate
     }
 
-    api.log(api.now());
-    if (!IF.wasInterrupted) {
-      console.log("Finished without interruption!");
-    }
+    api.broadcastMessage(
+      "| rcnt: " + IF.rcnt + " | calc: (" + arg1 + " * 10 + " + arg2 + ")" +
+      "\n" +
+      "| cache: " + cache.value + " | time: " + Date.now() +
+      "\n" +
+      "| interrupted: " + !!IF.rcnt
+    );
 
     return;
   };
 }
 
 // inside code block
-{
-  const var1 = "value1";
-  const var2 = "value2";
-  innerTest(var1, var2);
+if (myId !== null) {
+  const v1 = 6;
+  const v2 = 7;
+
+  inner_test(v1, v2);
+  // inner_test(v1, v2, {});
 }
 
 // inside code block
-{
-  const var3 = "value3";
-  const var4 = "value4";
+if (myId !== null) {
+  const v1 = 6;
+  const v2 = 7;
 
-  IF.state = 1;
-  IF.fn = outerTest;
-  IF.args = [var3, var4];
-  IF.limit = 5;
-  IF.phase = IF.default;
-  IF.cache = {};
+  IF.en = 1;
+  IF.fn = outer_test;
+  IF.args = [v1, v2];
+  // IF.args = [v1, v2, {}];
+  IF.sid = 0;
 
-  api.log(api.now());
-  while (true) { } // simulate interruption
-  outerTest(var3, var4);
-  _IF.state = 0;
+  api.broadcastMessage("retry " + IF.rcnt + " at " + Date.now() + " before function call");
+
+  interrupt(true); // simulate
+  outer_test(v1, v2);
+  // outer_test(v1, v2, {});
+
+  IF.en = 0;
 }
 

@@ -1,83 +1,117 @@
+// Interruption Framework v2026-02-29-0001
 // Copyright (c) 2025-2026 delfineonx
-// This product includes "Interruption Framework" created by delfineonx.
-// Licensed under the Apache License, Version 2.0.
-
-const InterruptionFramework = {
-  state: 0,
-  fn: () => { },
-  args: [],
-  limit: 2,
-  phase: 1048576,
-  cache: null,
-
-  default: 1048576,
-  wasInterrupted: false,
-
-  tick: null,
-};
+// SPDX-License-Identifier: Apache-2.0
 
 {
-  const _IF = InterruptionFramework;
+  const _IF = {
+    en: 0, // enable interrupt capture
+    fn: null, // handler
+    args: null, // can include "cache"
+    rcnt: 0, // retry counter
+    sid: 0, // state id
 
-  const _interrupted = {};
-  const _emptyArgs = [];
+    noArgs: null,
 
+    tick: null,
+  };
+
+  const _NO_OP = _IF.fn = Object.freeze(() => { });
+  const _NO_ARGS = _IF.args = (_IF.noArgs = Object.freeze([]));
+  const _NO_TASK = [null, _NO_ARGS, null, 0];
+
+  const _errorStyledText = [{
+    str: "",
+    style: {
+      color: "#FF775E",
+      fontWeight: "500",
+      fontSize: "0.95rem"
+    }
+  }];
+
+  const _queue = [];
+  let _task = _NO_TASK;
   let _external = 1;
-  let _element = [];
-  let _enqueueId = 1;
-  let _dequeueId = 1;
-  let _queueSize = 0;
 
+  let _headIndex = 0;
+  let _tailIndex = 0;
+  let _queueSize = 0;
+  
+  const _logError = (message) => {
+    _errorStyledText[0].str = message;
+    api.broadcastMessage(_errorStyledText);
+    _errorStyledText[0].str = "";
+  };
+
+  _IF.tick = () => {
+    _IF.fn = _NO_OP;
+    _IF.args = _NO_ARGS;
+    if (!_queueSize) { return; }
+
+    _external = 0;
+
+    let _error = null;
+    while (_queueSize) {
+      _task = _queue[_headIndex];
+
+      _IF.args = _task[1];
+      _IF.rcnt = ++_task[2];
+      _IF.sid = _task[3];
+      try {
+        _task[0](..._IF.args);
+      } catch (error) {
+        _error = error;
+      }
+
+      _queue[_headIndex] = undefined;
+      _headIndex++;
+      _queueSize--;
+
+      if (_error) {
+        _logError(
+          "Interruption Framework [" + (_task[0]?.name || "<anonymous>") + "]: " +
+          _error.name + ": " + _error.message
+        );
+        _error = null;
+      }
+    }
+    _headIndex = 0;
+    _tailIndex = 0;
+    _queue.length = 0;
+    
+    _task = _NO_TASK;
+
+    _IF.en = 0;
+    _IF.fn = _NO_OP;
+    _IF.args = _NO_ARGS;
+    _IF.rcnt = 0;
+
+    _external = 1;
+  };
+  
   Object.defineProperty(globalThis.InternalError.prototype, "name", {
     configurable: true,
     get: () => {
       if (_external) {
-        if (_IF.state) {
-          _interrupted[_enqueueId++] = [_IF.fn, _IF.args, _IF.limit, _IF.phase, _IF.cache];
+        if (_IF.en) {
+          _IF.en = 0;
+          _queue[_tailIndex] = [_IF.fn, _IF.args, 0, _IF.sid];
+          _tailIndex++;
           _queueSize++;
         }
       } else {
-        _element[3] = _IF.phase;
-        _IF.wasInterrupted = false;
+        _IF.en = 0;
+        _IF.rcnt = 0;
+        _task[1] = _IF.args;
+        _task[3] = _IF.sid;
+        _task = _NO_TASK;
+        _IF.args = _NO_ARGS;
         _external = 1;
       }
-      _IF.state = 0;
       return "InternalError";
     },
   });
-
-  _IF.tick = () => {
-    _IF.state = 0;
-    if (!_queueSize) {
-      _IF.args = _emptyArgs;
-      _IF.cache = null;
-      return;
-    }
-
-    _external = 0;
-    _IF.wasInterrupted = true;
-
-    while (_dequeueId < _enqueueId) {
-      _element = _interrupted[_dequeueId];
-      if (_element[2] > 0) {
-        _element[2]--;
-        _IF.phase = _element[3];
-        _IF.cache = _element[4];
-        _element[0](..._element[1]);
-      }
-      delete _interrupted[_dequeueId++];
-      _queueSize--;
-    }
-
-    _IF.state = 0;
-    _IF.args = _emptyArgs;
-    _IF.cache = null;
-    _IF.wasInterrupted = false;
-    _external = 1;
-  };
 
   Object.seal(_IF);
   globalThis.IF = _IF;
   void 0;
 }
-
