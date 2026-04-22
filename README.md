@@ -4,12 +4,12 @@
 <div align="center">
   <h1>Interruption Framework</h1>
   <p>
-    Description.
+    documentation is incomplete yet
   </p>
   <p>
     <a href="#installation"><kbd>Installation</kbd></a> &nbsp;•&nbsp;
     <a href="#api-methods"><kbd>API Methods</kbd></a> &nbsp;•&nbsp;
-    <a href="#license-and-credits"><kbd>License & Credits</kbd></a>
+    <a href="#license"><kbd>License</kbd></a>
   </p>
 </div>
 
@@ -32,7 +32,7 @@
       <blockquote>
         <p>
           If you use <a href="https://github.com/delfineonx/code-loader"><code>Code Loader</code></a>,
-          you must skip this part (it is already included in the build), but you still need to call the runner inside your callback.
+          you must skip this part (it is already included in the build), but you still need to call the runner.
         </p>
       </blockquote>
     </li>
@@ -60,7 +60,7 @@ tick = () => {
     </div>
   </summary>
 
-  <p>The tool is exposed as <code>globalThis.IF</code> / <code>IF</code>.</p>
+  <p><code>globalThis.IF</code> / <code>IF</code> exposes:</p>
 
 ```js
 // ... in progress
@@ -70,16 +70,16 @@ tick = () => {
 
 ---
 
-<a id="license-and-credits"></a>
+<a id="license"></a>
 <details open>
   <summary>
     <div align="center">
-      <h2>❮ <code><b>👥 License & Credits 👥</b></code> ❯</h2>
+      <h2>❮ <code><b>👥 License 👥</b></code> ❯</h2>
     </div>
   </summary>
 
 ```js
-// Interruption Framework v2026-03-01-0001
+// Interruption Framework v2026-04-22-0001
 // Copyright (c) 2025-2026 delfineonx
 // SPDX-License-Identifier: Apache-2.0
 ```
